@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -27,51 +27,42 @@ export function UrlResult({
   };
 
   return (
-    <AnimatePresence>
-      {shortUrl && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-          className="space-y-4"
-        >
-          <div className="p-4 bg-green-100 rounded-md">
-            <h3 className="text-lg font-medium text-green-900">
-              Your shortened URL:
-            </h3>
-            <div className="flex items-center mt-2">
-              <Input value={shortUrl} readOnly />
-              <Button
-                variant="outline"
-                size="icon"
-                className="ml-2"
-                onClick={copyToClipboard}
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
-            </div>
-            <p className="mt-2 text-sm text-green-700">
-              Usage limit: {usageLimit} clicks
-            </p>
-          </div>
-          <div className="flex justify-between">
-            <Button variant="outline" onClick={onShortenAnother}>
-              Shorten Another URL
-            </Button>
-            <Link
-              to={shortUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block"
-            >
-              <Button>
-                Open Short URL <ExternalLink className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-3"
+    >
+      <div className="p-3 bg-green-100 rounded-md">
+        <h3 className="text-sm font-medium text-green-900 mb-2">
+          Your shortened URL:
+        </h3>
+        <div className="flex items-center">
+          <Input value={shortUrl} readOnly className="text-sm" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-2 px-2"
+            onClick={copyToClipboard}
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
+        </div>
+        <p className="mt-2 text-xs text-green-700">
+          Usage limit: {usageLimit} clicks
+        </p>
+      </div>
+      <div className="flex justify-between">
+        <Button variant="outline" size="sm" onClick={onShortenAnother}>
+          Shorten Another
+        </Button>
+        <Link to={shortUrl} target="_blank" rel="noopener noreferrer">
+          <Button size="sm">
+            Open Short URL <ExternalLink className="ml-1 h-3 w-3" />
+          </Button>
+        </Link>
+      </div>
+    </motion.div>
   );
 }

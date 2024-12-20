@@ -1,27 +1,20 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
 import { UrlInputForm } from "./UrlInputForm";
 import { UrlResult } from "./UrlResult";
 import { HowItWorks } from "./HowItWorks";
+import { UrlUsageCheck } from "./CheckUrlUsage";
 
 // Mock API call function (replace with actual API call later)
 const shortenUrl = async (
   url: string
 ): Promise<{ shortUrl: string; usageLimit: number }> => {
-  // Simulating API call delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log("Original URL :", url);
+  console.log("Original url :", url);
   return {
     shortUrl: `https://short.url/${Math.random().toString(36).substr(2, 6)}`,
     usageLimit: 100,
@@ -54,48 +47,60 @@ export function UrlShortener() {
     }
   };
 
+  const tabVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -10 },
+  };
+
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 py-12 px-4 sm:px-6 lg:px-8"
+      className="container mx-auto px-4 py-8"
     >
-      <div className="max-w-3xl mx-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-4xl font-extrabold text-center text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
-              Shorten Your URLs
-            </CardTitle>
-            <CardDescription className="mt-5 text-xl text-center text-gray-500">
-              Create short, memorable links in seconds.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="shorten">Shorten URL</TabsTrigger>
-                <TabsTrigger value="result" disabled={!shortUrl}>
-                  Result
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="shorten">
-                <UrlInputForm onSubmit={handleShorten} />
-              </TabsContent>
-              <TabsContent value="result">
-                <UrlResult
-                  shortUrl={shortUrl}
-                  usageLimit={usageLimit}
-                  onShortenAnother={() => setActiveTab("shorten")}
-                />
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-          <CardFooter>
-            <HowItWorks />
-          </CardFooter>
-        </Card>
-      </div>
+      <Card className="max-w-xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center">
+            URL Shortener
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3 mb-4">
+              <TabsTrigger value="shorten">Shorten</TabsTrigger>
+              <TabsTrigger value="result" disabled={!shortUrl}>
+                Result
+              </TabsTrigger>
+              <TabsTrigger value="check">Check Usage</TabsTrigger>
+            </TabsList>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={tabVariants}
+                transition={{ duration: 0.3 }}
+              >
+                {activeTab === "shorten" && (
+                  <UrlInputForm onSubmit={handleShorten} />
+                )}
+                {activeTab === "result" && (
+                  <UrlResult
+                    shortUrl={shortUrl}
+                    usageLimit={usageLimit}
+                    onShortenAnother={() => setActiveTab("shorten")}
+                  />
+                )}
+                {activeTab === "check" && <UrlUsageCheck />}
+              </motion.div>
+            </AnimatePresence>
+          </Tabs>
+          <HowItWorks />
+        </CardContent>
+      </Card>
       <Toaster />
     </motion.div>
   );

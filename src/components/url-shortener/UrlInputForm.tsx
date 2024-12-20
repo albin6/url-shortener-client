@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,12 +18,15 @@ export function UrlInputForm({ onSubmit }: UrlInputFormProps) {
     setIsLoading(true);
     await onSubmit(url);
     setIsLoading(false);
+    setUrl("");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="url">Enter your long URL</Label>
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div className="space-y-1">
+        <Label htmlFor="url" className="text-sm">
+          Enter your long URL
+        </Label>
         <Input
           id="url"
           type="url"
@@ -29,6 +34,7 @@ export function UrlInputForm({ onSubmit }: UrlInputFormProps) {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           required
+          className="text-sm"
         />
       </div>
       <Button type="submit" disabled={isLoading} className="w-full">
