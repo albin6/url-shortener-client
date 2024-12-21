@@ -8,18 +8,7 @@ import { UrlInputForm } from "./UrlInputForm";
 import { UrlResult } from "./UrlResult";
 import { HowItWorks } from "./HowItWorks";
 import { UrlUsageCheck } from "./CheckUrlUsage";
-
-// Mock API call function (replace with actual API call later)
-const shortenUrl = async (
-  url: string
-): Promise<{ shortUrl: string; usageLimit: number }> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log("Original url :", url);
-  return {
-    shortUrl: `https://short.url/${Math.random().toString(36).substr(2, 6)}`,
-    usageLimit: 100,
-  };
-};
+import { createShortenUrl } from "@/services/createShortenUrl";
 
 export function UrlShortener() {
   const [shortUrl, setShortUrl] = useState("");
@@ -29,7 +18,7 @@ export function UrlShortener() {
 
   const handleShorten = async (url: string) => {
     try {
-      const result = await shortenUrl(url);
+      const result = await createShortenUrl(url);
       setShortUrl(result.shortUrl);
       setUsageLimit(result.usageLimit);
       setActiveTab("result");
